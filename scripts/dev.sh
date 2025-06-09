@@ -19,22 +19,6 @@ print_warning() {
     echo -e "${YELLOW}[MediaLab Dev Warning]${NC} $1"
 }
 
-# Function to check if Docker is running
-check_docker() {
-    if ! docker info > /dev/null 2>&1; then
-        print_error "Docker is not running. Please start Docker and try again."
-        exit 1
-    fi
-}
-
-# Function to check if Docker Compose plugin is available
-check_docker_compose() {
-    if ! docker compose version > /dev/null 2>&1; then
-        print_error "Docker Compose plugin is not available. Please ensure Docker Compose plugin is installed on your host machine."
-        exit 1
-    fi
-}
-
 # Function to check if required ports are available
 check_ports() {
     local ports=("4800" "4810")
@@ -48,65 +32,66 @@ check_ports() {
 # Function to start the development environment
 start_dev() {
     print_message "Starting MediaLab development environment..."
-    check_docker
-    check_docker_compose
     check_ports
     
-    # Build images if they don't exist
-    if ! docker compose images | grep -q "medialab-server"; then
-        print_message "Building images for the first time..."
-        docker compose build
-    fi
+    # Start the server
+    print_message "Starting server..."
+    cd server && npm run dev &
+    SERVER_PID=$!
     
-    # Start the services
-    docker compose up -d
+    # Start the client
+    print_message "Starting client..."
+    cd ../client && npm run dev &
+    CLIENT_PID=$!
     
-    # Wait for services to be ready
-    print_message "Waiting for services to be ready..."
-    sleep 5
+    # Save PIDs to a file for later use
+    echo "$SERVER_PID" > .dev.pid
+    echo "$CLIENT_PID" >> .dev.pid
     
-    # Check if services are running
-    if docker compose ps | grep -q "Up"; then
-        print_message "Development environment is ready!"
-        print_message "Server: http://localhost:4800/docs"
-        print_message "Client: http://localhost:4810/docs"
-        print_message "VS Code Dev Container: Use 'Reopen in Container' command in VS Code"
-    else
-        print_error "Failed to start services. Check logs with: ./scripts/dev.sh logs"
-        exit 1
-    fi
+    print_message "Development environment is ready!"
+    print_message "Server: http://localhost:4800/docs"
+    print_message "Client: http://localhost:4810/docs"
 }
 
 # Function to stop the development environment
 stop_dev() {
     print_message "Stopping MediaLab development environment..."
-    docker compose down
+    if [ -f .dev.pid ]; then
+        while read pid; do
+            if ps -p $pid > /dev/null; then
+                kill $pid
+            fi
+        done < .dev.pid
+        rm .dev.pid
+    fi
     print_message "Development environment stopped."
 }
 
 # Function to show logs
 show_logs() {
     if [ "$1" == "server" ]; then
-        docker compose logs -f server
+        tail -f server/logs/app.log
     elif [ "$1" == "client" ]; then
-        docker compose logs -f client
+        tail -f client/logs/app.log
     else
-        docker compose logs -f
+        tail -f server/logs/app.log client/logs/app.log
     fi
-}
-
-# Function to rebuild services
-rebuild() {
-    print_message "Rebuilding services..."
-    docker compose down
-    docker compose build --no-cache
-    start_dev
 }
 
 # Function to show status
 show_status() {
     print_message "Service Status:"
-    docker compose ps
+    if [ -f .dev.pid ]; then
+        while read pid; do
+            if ps -p $pid > /dev/null; then
+                echo "Process $pid is running"
+            else
+                echo "Process $pid is not running"
+            fi
+        done < .dev.pid
+    else
+        print_warning "No running processes found"
+    fi
 }
 
 # Function to show help
@@ -115,20 +100,17 @@ show_help() {
     echo "Usage: ./scripts/dev.sh [command]"
     echo ""
     echo "Commands:"
-    echo "  start     Start the development environment (run this from host machine)"
+    echo "  start     Start the development environment"
     echo "  stop      Stop the development environment"
     echo "  restart   Restart the development environment"
     echo "  logs      Show logs (all, server, or client)"
-    echo "  rebuild   Rebuild and restart the services"
     echo "  status    Show service status"
     echo "  help      Show this help message"
     echo ""
     echo "Examples:"
-    echo "  ./scripts/dev.sh start    # Run this from host machine"
+    echo "  ./scripts/dev.sh start"
     echo "  ./scripts/dev.sh logs server"
     echo "  ./scripts/dev.sh stop"
-    echo ""
-    echo "Note: This script should be run from your host machine, not from within the dev container."
 }
 
 # Main script logic
@@ -145,9 +127,6 @@ case "$1" in
         ;;
     "logs")
         show_logs "$2"
-        ;;
-    "rebuild")
-        rebuild
         ;;
     "status")
         show_status
