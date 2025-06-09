@@ -1,0 +1,6 @@
+Metadata-Version: 2.1
+Name: common
+Version: 0.1.0
+Summary: Common library for MediaLab server and client
+Author: MediaLab
+Requires-Python: >=3.11

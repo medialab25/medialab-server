@@ -22,6 +22,7 @@
         "ms-python.isort",
         "ms-azuretools.vscode-docker"
     ],
-    "postCreateCommand": "pip install --user -r server/requirements.txt && pip install --user -r client/requirements.txt",
+    "postCreateCommand": "export PATH=\"$HOME/.local/bin:$PATH\" && echo 'export PATH=\"$HOME/.local/bin:$PATH\"' >> ~/.profile && echo 'export PATH=\"$HOME/.local/bin:$PATH\"' >> ~/.bashrc && pip install --user -r server/requirements.txt && pip install --user -r client/requirements.txt",
+    "postStartCommand": "export PATH=\"$HOME/.local/bin:$PATH\"",
     "remoteUser": "vscode"
 }
