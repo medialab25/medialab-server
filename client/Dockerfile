@@ -17,4 +17,4 @@ COPY client/ /app/
 EXPOSE 4810
 
 # Run the client
-CMD ["python", "src/main.py"] 
+CMD ["uvicorn", "src.main:app", "--host", "0.0.0.0", "--port", "4810"] 

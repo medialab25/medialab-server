@@ -27,6 +27,14 @@ check_docker() {
     fi
 }
 
+# Function to check if Docker Compose plugin is available
+check_docker_compose() {
+    if ! docker compose version > /dev/null 2>&1; then
+        print_error "Docker Compose plugin is not available. Please ensure Docker Compose plugin is installed on your host machine."
+        exit 1
+    fi
+}
+
 # Function to check if required ports are available
 check_ports() {
     local ports=("4800" "4810")
@@ -41,6 +49,7 @@ check_ports() {
 start_dev() {
     print_message "Starting MediaLab development environment..."
     check_docker
+    check_docker_compose
     check_ports
     
     # Build images if they don't exist
@@ -61,8 +70,9 @@ start_dev() {
         print_message "Development environment is ready!"
         print_message "Server: http://localhost:4800/docs"
         print_message "Client: http://localhost:4810/docs"
+        print_message "VS Code Dev Container: Use 'Reopen in Container' command in VS Code"
     else
-        print_error "Failed to start services. Check logs with: ./dev.sh logs"
+        print_error "Failed to start services. Check logs with: ./scripts/dev.sh logs"
         exit 1
     fi
 }
@@ -102,10 +112,10 @@ show_status() {
 # Function to show help
 show_help() {
     echo "MediaLab Development Script"
-    echo "Usage: ./dev.sh [command]"
+    echo "Usage: ./scripts/dev.sh [command]"
     echo ""
     echo "Commands:"
-    echo "  start     Start the development environment"
+    echo "  start     Start the development environment (run this from host machine)"
     echo "  stop      Stop the development environment"
     echo "  restart   Restart the development environment"
     echo "  logs      Show logs (all, server, or client)"
@@ -114,9 +124,11 @@ show_help() {
     echo "  help      Show this help message"
     echo ""
     echo "Examples:"
-    echo "  ./dev.sh start"
-    echo "  ./dev.sh logs server"
-    echo "  ./dev.sh stop"
+    echo "  ./scripts/dev.sh start    # Run this from host machine"
+    echo "  ./scripts/dev.sh logs server"
+    echo "  ./scripts/dev.sh stop"
+    echo ""
+    echo "Note: This script should be run from your host machine, not from within the dev container."
 }
 
 # Main script logic

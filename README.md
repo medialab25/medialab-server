@@ -14,97 +14,91 @@ medialab-server/
 │   ├── __init__.py        # Package initialization
 │   └── setup.py           # Package setup
 ├── server/                 # FastAPI server application
-│   ├── app/               # Main application code
-│   ├── tests/             # Server tests
-│   └── requirements.txt    # Server dependencies
+│   ├── src/              # Server source code
+│   ├── tests/            # Server tests
+│   └── requirements.txt   # Server dependencies
 ├── client/                # Python client application
 │   ├── src/              # Client source code
 │   ├── tests/            # Client tests
 │   └── requirements.txt   # Client dependencies
-└── README.md             # This file
-```
-
-## Common Library
-
-The project includes a common library package that is shared between the server and client applications. This library provides:
-
-- Shared data models (Item, Notification, StatusResponse)
-- Common constants (ports, URLs, endpoints)
-- Utility functions for:
-  - Service status checking
-  - Notification handling
-  - Error response formatting
-- Type definitions and enums
-- Consistent validation rules
-
-The common library is installed in editable mode in both the server and client applications, allowing for easy development and updates.
-
-To use the common library in either application:
-
-```python
-from common import Item, Notification, NotificationType
-from common import SERVER_URL, CLIENT_URL, Endpoints
-from common import check_service_status, send_notification
+├── scripts/              # Development and deployment scripts
+│   └── dev.sh           # Development environment script
+├── docker-compose.yml    # Service orchestration
+└── README.md            # This file
 ```
 
 ## Development Setup
 
-This project uses VS Code's Dev Containers for development. To get started:
+### Prerequisites
 
-1. Install [Docker](https://www.docker.com/products/docker-desktop)
-2. Install [VS Code](https://code.visualstudio.com/)
-3. Install the [Remote - Containers](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers) extension
-4. Clone this repository
-5. Open in VS Code and click "Reopen in Container" when prompted
+- [Docker](https://www.docker.com/products/docker-desktop) installed on your host machine
+- [VS Code](https://code.visualstudio.com/) with [Remote - Containers](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers) extension
 
-## Running the Applications
+### Starting Development
+
+1. Start the development environment from your host machine:
+   ```bash
+   ./scripts/dev.sh start
+   ```
+   This will:
+   - Build and start the server and client containers
+   - Set up hot-reload for both services
+   - Make services available at:
+     - Server: http://localhost:4800/docs
+     - Client: http://localhost:4810/docs
+
+2. Open VS Code and use "Reopen in Container" command
+   - This will open a development container with:
+     - Python development tools
+     - Code formatting (black)
+     - Linting (pylint)
+     - Testing (pytest)
+     - Type checking (mypy)
+
+### Development Workflow
+
+1. **Host Machine** (for Docker operations):
+   ```bash
+   # Start services
+   ./scripts/dev.sh start
+
+   # View logs
+   ./scripts/dev.sh logs
+
+   # Stop services
+   ./scripts/dev.sh stop
+
+   # Rebuild services
+   ./scripts/dev.sh rebuild
+   ```
+
+2. **VS Code Dev Container** (for development):
+   - Edit code with full IDE support
+   - Automatic formatting on save
+   - Integrated testing
+   - Type checking
+   - Hot-reload enabled for both services
+
+## Services
 
 ### Server (Port 4800)
 
-The FastAPI server runs on port 4800. To start it:
-
-```bash
-cd server
-uvicorn app.main:app --reload --port 4800
-```
-
-The server provides:
+FastAPI server providing:
 - REST API for managing items
-- Automatic client notifications for all item operations
-- Client status monitoring
+- Automatic client notifications
 - API documentation at:
   - Swagger UI: http://localhost:4800/docs
   - ReDoc: http://localhost:4800/redoc
 
 ### Client (Port 4810)
 
-The Python client runs on port 4810 and provides:
+FastAPI client providing:
 - REST API for client operations
-- Bidirectional communication with the server
-- Notification system for server events
-- Status monitoring
+- Bidirectional communication with server
+- Notification system
 - API documentation at:
   - Swagger UI: http://localhost:4810/docs
   - ReDoc: http://localhost:4810/redoc
-
-To start the client:
-```bash
-cd client
-python src/main.py
-```
-
-## Communication Features
-
-### Server to Client
-- Server automatically notifies client of all item operations (create, update, delete)
-- Server can check client status via `/client-status` endpoint
-- Notifications are processed asynchronously by the client
-
-### Client to Server
-- Client can perform all CRUD operations on server items
-- Client maintains a notification history
-- Client provides status information to the server
-- All operations are performed asynchronously
 
 ## API Endpoints
 
@@ -129,15 +123,15 @@ python src/main.py
 - `POST /server-communication/notify` - Receive server notifications
 - `GET /server-communication/status` - Get communication status
 
-## Development
+## Development Tools
 
-- Server API is built with FastAPI
-- Client uses FastAPI for its own API
-- Both applications use `httpx` for async HTTP requests
-- Both applications use `pydantic` for data validation
-- Testing is done with `pytest`
-- Background tasks are used for async operations
-- Notifications are processed asynchronously
+The development container includes:
+- Python 3.11
+- Black (code formatting)
+- Pylint (code linting)
+- Pytest (testing)
+- MyPy (type checking)
+- Git (version control)
 
 ## License
 

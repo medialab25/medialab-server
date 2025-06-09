@@ -30,8 +30,4 @@ services:
       - SERVER_URL=http://server:4800
     depends_on:
       - server
-    command: uvicorn src.main:app --host 0.0.0.0 --port 4810 --reload
-
-networks:
-  medialab-network:
-    driver: bridge 
+    command: uvicorn src.main:app --host 0.0.0.0 --port 4810 --reload 

@@ -6,10 +6,7 @@ ENV DEBIAN_FRONTEND=noninteractive
 # Configure apt and install packages
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
-        git \
-        curl \
-        procps \
-        lsb-release \
+    git \
     && apt-get autoremove -y \
     && apt-get clean -y \
     && rm -rf /var/lib/apt/lists/*
@@ -32,11 +29,11 @@ RUN groupadd --gid $USER_GID $USERNAME \
 # Install Python packages
 RUN pip install --upgrade pip \
     && pip install \
-        black \
-        pylint \
-        pytest \
-        pytest-asyncio \
-        mypy
+    black \
+    pylint \
+    pytest \
+    pytest-asyncio \
+    mypy
 
 # Set the default user
 USER $USERNAME 

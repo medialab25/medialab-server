@@ -13,16 +13,18 @@
         "editor.formatOnSave": true,
         "editor.codeActionsOnSave": {
             "source.organizeImports": true
-        }
+        },
+        "terminal.integrated.defaultProfile.linux": "bash"
+    },
+    "remoteEnv": {
+        "PATH": "${containerEnv:PATH}:/home/vscode/.local/bin"
     },
     "extensions": [
         "ms-python.python",
         "ms-python.vscode-pylance",
         "ms-python.black-formatter",
-        "ms-python.isort",
-        "ms-azuretools.vscode-docker"
+        "ms-python.isort"
     ],
-    "postCreateCommand": "export PATH=\"$HOME/.local/bin:$PATH\" && echo 'export PATH=\"$HOME/.local/bin:$PATH\"' >> ~/.profile && echo 'export PATH=\"$HOME/.local/bin:$PATH\"' >> ~/.bashrc && pip install --user -r server/requirements.txt && pip install --user -r client/requirements.txt",
-    "postStartCommand": "export PATH=\"$HOME/.local/bin:$PATH\"",
+    "postCreateCommand": "pip install --user -r server/requirements.txt && pip install --user -r client/requirements.txt",
     "remoteUser": "vscode"
 }
