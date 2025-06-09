@@ -17,4 +17,4 @@ COPY server/ /app/
 EXPOSE 4800
 
 # Run the server
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "4800"] 
+CMD ["uvicorn", "src.main:app", "--host", "0.0.0.0", "--port", "4800"] 
