@@ -7,15 +7,13 @@ services:
       dockerfile: server/Dockerfile
     ports:
       - "4800:4800"
+    volumes:
+      - ./server:/app
+      - ./common:/app/common
     environment:
-      - CLIENT_URL=http://client:4810
-    networks:
-      - medialab-network
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:4800/"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
+      - PYTHONPATH=/app
+      - ENVIRONMENT=development
+    command: uvicorn src.main:app --host 0.0.0.0 --port 4800 --reload
 
   client:
     build:
@@ -23,18 +21,16 @@ services:
       dockerfile: client/Dockerfile
     ports:
       - "4810:4810"
+    volumes:
+      - ./client:/app
+      - ./common:/app/common
     environment:
+      - PYTHONPATH=/app
+      - ENVIRONMENT=development
       - SERVER_URL=http://server:4800
-    networks:
-      - medialab-network
     depends_on:
-      server:
-        condition: service_healthy
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:4810/"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
+      - server
+    command: uvicorn src.main:app --host 0.0.0.0 --port 4810 --reload
 
 networks:
   medialab-network:
