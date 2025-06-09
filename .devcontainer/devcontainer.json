@@ -28,14 +28,14 @@
                     "source.organizeImports": "explicit"
                 },
                 "python.analysis.typeCheckingMode": "basic",
+                "terminal.integrated.defaultProfile.linux": "bash",
                 "[python]": {
                     "editor.defaultFormatter": "ms-python.black-formatter",
                     "editor.formatOnSave": true,
                     "editor.codeActionsOnSave": {
                         "source.organizeImports": "explicit"
                     }
-                },
-                "terminal.integrated.defaultProfile.linux": "bash"
+                }
             }
         }
     },

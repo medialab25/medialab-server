@@ -36,12 +36,12 @@ start_dev() {
     
     # Start the server
     print_message "Starting server..."
-    cd server && npm run dev &
+    cd server && uvicorn src.main:app --reload --port 4800 &
     SERVER_PID=$!
     
     # Start the client
     print_message "Starting client..."
-    cd ../client && npm run dev &
+    cd ../client && uvicorn src.main:app --reload --port 4810 &
     CLIENT_PID=$!
     
     # Save PIDs to a file for later use
@@ -97,7 +97,7 @@ show_status() {
 # Function to show help
 show_help() {
     echo "MediaLab Development Script"
-    echo "Usage: ./scripts/dev.sh [command]"
+    echo "Usage: ./mldev [command]"
     echo ""
     echo "Commands:"
     echo "  start     Start the development environment"
@@ -108,9 +108,9 @@ show_help() {
     echo "  help      Show this help message"
     echo ""
     echo "Examples:"
-    echo "  ./scripts/dev.sh start"
-    echo "  ./scripts/dev.sh logs server"
-    echo "  ./scripts/dev.sh stop"
+    echo "  ./mldev start"
+    echo "  ./mldev logs server"
+    echo "  ./mldev stop"
 }
 
 # Main script logic

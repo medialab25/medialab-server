@@ -3,7 +3,7 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "medialab-server"
+name = "medialab_server"
 version = "0.1.0"
 description = "MediaLab Server - FastAPI backend service"
 requires-python = ">=3.9"
@@ -27,6 +27,9 @@ dev = [
 
 [tool.hatch.build.targets.wheel]
 packages = ["src"]
+
+[tool.hatch.build]
+include = ["src/**/*.py"]
 
 [tool.black]
 line-length = 88
