@@ -2,7 +2,27 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Server: FastAPI",
+            "name": "Client",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "uvicorn",
+            "args": [
+                "src.main:app",
+                "--host",
+                "0.0.0.0",
+                "--port",
+                "4810",
+                "--reload"
+            ],
+            "cwd": "${workspaceFolder}/client",
+            "justMyCode": false,
+            "jinja": true,
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}"
+            }
+        },
+        {
+            "name": "Server",
             "type": "debugpy",
             "request": "launch",
             "module": "uvicorn",
@@ -14,34 +34,20 @@
                 "4800",
                 "--reload"
             ],
+            "cwd": "${workspaceFolder}/server",
+            "justMyCode": false,
             "jinja": true,
-            "justMyCode": true,
-            "cwd": "${workspaceFolder}/server"
-        },
-        {
-            "name": "Client: FastAPI",
-            "type": "debugpy",
-            "request": "launch",
-            "module": "uvicorn",
-            "args": [
-                "client.src.main:app",
-                "--host",
-                "0.0.0.0",
-                "--port",
-                "4810",
-                "--reload"
-            ],
-            "jinja": true,
-            "justMyCode": true,
-            "cwd": "${workspaceFolder}/client"
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}"
+            }
         }
     ],
     "compounds": [
         {
             "name": "Server + Client",
             "configurations": [
-                "Server: FastAPI",
-                "Client: FastAPI"
+                "Server",
+                "Client"
             ],
             "stopAll": true
         }

@@ -40,7 +40,7 @@
         }
     },
     "remoteUser": "vscode",
-    "postCreateCommand": "/bin/bash -c 'cd server && pip install -e . && cd ../client && pip install -e .'",
+    "postCreateCommand": "/bin/bash -c 'pip install -e ./common && pip install -e ./server && pip install -e ./client'",
     "forwardPorts": [
         4800,
         4810
@@ -48,6 +48,7 @@
     "workspaceMount": "source=${localWorkspaceFolder},target=/workspace,type=bind,consistency=cached",
     "workspaceFolder": "/workspace",
     "remoteEnv": {
-        "PATH": "${containerEnv:PATH}:/home/vscode/.local/bin"
+        "PATH": "${containerEnv:PATH}:/home/vscode/.local/bin",
+        "PYTHONPATH": "${containerEnv:PYTHONPATH}:/workspace"
     }
 }

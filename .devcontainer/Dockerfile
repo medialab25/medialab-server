@@ -9,7 +9,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 # (Optional) Add more system dependencies below as needed
 
 # Copy requirements file first to leverage Docker cache
-COPY requirements-dev.txt /tmp/pip-tmp/
+COPY .devcontainer/requirements-dev.txt /tmp/pip-tmp/
 
 # Install Python development tools
 RUN pip3 --disable-pip-version-check --no-cache-dir install -r /tmp/pip-tmp/requirements-dev.txt \
