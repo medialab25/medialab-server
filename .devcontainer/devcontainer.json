@@ -1,0 +1,27 @@
+{
+    "name": "MediaLab Python Development",
+    "dockerFile": "Dockerfile",
+    "forwardPorts": [
+        4800,
+        4810
+    ],
+    "settings": {
+        "python.defaultInterpreterPath": "/usr/local/bin/python",
+        "python.linting.enabled": true,
+        "python.linting.pylintEnabled": true,
+        "python.formatting.provider": "black",
+        "editor.formatOnSave": true,
+        "editor.codeActionsOnSave": {
+            "source.organizeImports": true
+        }
+    },
+    "extensions": [
+        "ms-python.python",
+        "ms-python.vscode-pylance",
+        "ms-python.black-formatter",
+        "ms-python.isort",
+        "ms-azuretools.vscode-docker"
+    ],
+    "postCreateCommand": "pip install --user -r server/requirements.txt && pip install --user -r client/requirements.txt",
+    "remoteUser": "vscode"
+}
